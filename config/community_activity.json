@@ -1,0 +1,23 @@
+{
+    "category": "community",
+    "version": "v1",
+    "name": "社区发帖活动",
+    "start_at": 1679000000,
+    "end_at": 1679086400,
+    "games": [
+        {
+            "type": "post",
+            "name": "发帖奖励",
+            "config": {
+                "prize": {
+                    "discount_code": "COMMUNITY_2024",
+                    "price_rule_id": 123,
+                    "probability": 100,
+                    "total_num": 1000,
+                    "remain_num": 1000
+                },
+                "state": "OPEN"
+            }
+        }
+    ]
+} 
