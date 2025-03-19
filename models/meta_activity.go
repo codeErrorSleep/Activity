@@ -10,7 +10,9 @@ type ActivityInterface interface {
 	Version() string        // 活动版本
 	Name() string           // 活动名称，具有唯一约束
 	Games() []GameInterface // 活动下玩法
-
+	StartAt() int64         // 活动开始时间戳
+	EndAt() int64           // 活动结束时间戳
+	Status() int64          // 活动状态
 }
 
 type ResultInterface interface {

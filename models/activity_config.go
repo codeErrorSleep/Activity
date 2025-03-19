@@ -98,3 +98,15 @@ func (a *CommunityActivity) Name() string {
 func (a *CommunityActivity) Games() []GameInterface {
 	return a.GameList
 }
+
+func (a *CommunityActivity) StartAt() int64 {
+	return a.MetaActivity.StartAt
+}
+
+func (a *CommunityActivity) EndAt() int64 {
+	return a.MetaActivity.EndAt
+}
+
+func (a *CommunityActivity) Status() int64 {
+	return a.MetaActivity.Status
+}
