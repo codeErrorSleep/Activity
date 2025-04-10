@@ -10,6 +10,7 @@ type (
 	ParticipateGameReq struct {
 		ActivityID string `json:"activity_id" binding:"required"` // 活动ID
 		GameName   string `json:"game_name" binding:"required"`   // 玩法名称
+		GameType   string `json:"game_type" binding:"required"`   // 玩法类型：post/checkin
 		PostID     string `json:"post_id"`                        // 发帖ID（社区发帖玩法需要）
 	}
 

@@ -4,6 +4,7 @@ import (
 	"Activity/constant"
 	"Activity/models"
 	"net/http"
+	"time"
 
 	"github.com/gin-gonic/gin"
 )
@@ -44,9 +45,23 @@ func (h *Handler) ParticipateGame(c *gin.Context) {
 		Uid: c.GetString("uid"),
 	}
 
-	// 创建发帖动作
-	action := &models.CommunityPostAction{
-		PostID: req.PostID,
+	// 根据玩法类型创建对应的动作
+	var action models.ActionInterface
+	switch req.GameType {
+	case "post":
+		action = &models.CommunityPostAction{
+			PostID: req.PostID,
+		}
+	case "checkin":
+		action = &models.CheckinAction{
+			CheckinTime: time.Now(),
+		}
+	default:
+		c.JSON(http.StatusBadRequest, BaseResp{
+			Code:    constant.ErrInvalidParam,
+			Message: "unsupported game type",
+		})
+		return
 	}
 
 	// 执行玩法逻辑

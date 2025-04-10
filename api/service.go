@@ -60,6 +60,11 @@ func (s *gameService) ParticipateGame(ctx context.Context, user models.User, act
 		return nil, fmt.Errorf("failed to perform game: %w", err)
 	}
 
+	// 7. 保存用户参与记录
+	if err := s.saveUserGameRecord(ctx, user, activityID, gameName, result); err != nil {
+		return nil, fmt.Errorf("failed to save user game record: %w", err)
+	}
+
 	return result, nil
 }
 
@@ -84,10 +89,16 @@ func (s *gameService) GetGameStatus(ctx context.Context, user models.User, activ
 
 	// 4. 获取奖品信息
 	var remainNum, totalNum int64
-	if communityGame, ok := game.(*models.CommunityPostGame); ok {
-		if communityGame.Prize != nil {
-			remainNum = communityGame.Prize.RemainNum
-			totalNum = communityGame.Prize.TotalNum
+	switch g := game.(type) {
+	case *models.CommunityPostGame:
+		if g.Prize != nil {
+			remainNum = g.Prize.RemainNum
+			totalNum = g.Prize.TotalNum
+		}
+	case *models.CheckinGame:
+		if g.Prize != nil {
+			remainNum = g.Prize.RemainNum
+			totalNum = g.Prize.TotalNum
 		}
 	}
 
@@ -154,6 +165,12 @@ func (s *gameService) getGameByName(activity models.ActivityInterface, gameName 
 		}
 	}
 	return nil, fmt.Errorf("game not found")
+}
+
+// saveUserGameRecord 保存用户参与记录
+func (s *gameService) saveUserGameRecord(ctx context.Context, user models.User, activityID, gameName string, result models.ResultInterface) error {
+	// TODO: 实现用户参与记录的保存
+	return nil
 }
 
 // ActivityRepository 活动仓库接口

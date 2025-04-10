@@ -1,0 +1,27 @@
+{
+    "category": "checkin",
+    "version": "v1",
+    "name": "连续签到活动",
+    "start_at": 1679000000,
+    "end_at": 1679086400,
+    "games": [
+        {
+            "type": "checkin",
+            "name": "连续签到奖励",
+            "config": {
+                "prize": {
+                    "discount_code": "CHECKIN_2024",
+                    "price_rule_id": 123,
+                    "probability": 100,
+                    "total_num": 1000,
+                    "remain_num": 1000
+                },
+                "state": "OPEN",
+                "config": {
+                    "required_days": 7,
+                    "checkin_days": 0
+                }
+            }
+        }
+    ]
+} 
