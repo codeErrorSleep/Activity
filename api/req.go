@@ -4,6 +4,75 @@ import (
 	"time"
 )
 
+// ActivityRequest 活动请求基类
+type ActivityRequest struct {
+	ActivityID int64  `json:"activity_id" binding:"required"`
+	UserID     string `json:"user_id" binding:"required"`
+}
+
+// CreateActivityRequest 创建活动请求
+type CreateActivityRequest struct {
+	Category string `json:"category" binding:"required"`
+	Version  string `json:"version" binding:"required"`
+	Name     string `json:"name" binding:"required"`
+	Config   string `json:"config" binding:"required"`
+	StartAt  int64  `json:"start_at" binding:"required"`
+	EndAt    int64  `json:"end_at" binding:"required"`
+	Status   int64  `json:"status" binding:"required"`
+}
+
+// UpdateActivityRequest 更新活动请求
+type UpdateActivityRequest struct {
+	ActivityID int64  `json:"activity_id" binding:"required"`
+	Config     string `json:"config" binding:"required"`
+	Status     int64  `json:"status" binding:"required"`
+}
+
+// ParticipateRequest 参与活动请求
+type ParticipateRequest struct {
+	ActivityRequest
+	GameType   string `json:"game_type" binding:"required"`
+	GameTarget string `json:"game_target" binding:"required"`
+}
+
+// ActivityResponse 活动响应
+type ActivityResponse struct {
+	ID        int64     `json:"id"`
+	Category  string    `json:"category"`
+	Version   string    `json:"version"`
+	Name      string    `json:"name"`
+	Config    string    `json:"config"`
+	StartAt   int64     `json:"start_at"`
+	EndAt     int64     `json:"end_at"`
+	Status    int64     `json:"status"`
+	CreatedAt time.Time `json:"created_at"`
+	UpdatedAt time.Time `json:"updated_at"`
+}
+
+// ParticipationResponse 参与记录响应
+type ParticipationResponse struct {
+	ID         int64     `json:"id"`
+	ActivityID int64     `json:"activity_id"`
+	UserID     string    `json:"user_id"`
+	GameType   string    `json:"game_type"`
+	GameTarget string    `json:"game_target"`
+	State      string    `json:"state"`
+	CreatedAt  time.Time `json:"created_at"`
+	UpdatedAt  time.Time `json:"updated_at"`
+}
+
+// PrizeResponse 奖品响应
+type PrizeResponse struct {
+	ID         int64     `json:"id"`
+	ActivityID int64     `json:"activity_id"`
+	UserID     string    `json:"user_id"`
+	PrizeType  string    `json:"prize_type"`
+	PrizeID    string    `json:"prize_id"`
+	Status     int64     `json:"status"`
+	CreatedAt  time.Time `json:"created_at"`
+	UpdatedAt  time.Time `json:"updated_at"`
+}
+
 // 请求结构体
 type (
 	// ParticipateGameReq 参与玩法请求

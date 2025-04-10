@@ -30,4 +30,21 @@ const (
 	ErrPrizeStockEmpty = 10008
 	// 用户未发帖
 	ErrUserNotPosted = 10009
+	// 用户未签到
+	ErrUserNotCheckedIn = 10010
+)
+
+// 错误消息
+const (
+	ErrMsgSystem                  = "系统错误"
+	ErrMsgInvalidParam            = "参数错误"
+	ErrMsgActivityNotFound        = "活动不存在"
+	ErrMsgActivityEnded           = "活动已结束"
+	ErrMsgActivityNotStarted      = "活动未开始"
+	ErrMsgGameNotFound            = "玩法不存在"
+	ErrMsgGameClosed              = "玩法已关闭"
+	ErrMsgUserAlreadyParticipated = "用户已参与"
+	ErrMsgPrizeStockEmpty         = "奖品库存不足"
+	ErrMsgUserNotPosted           = "用户未发帖"
+	ErrMsgUserNotCheckedIn        = "用户未签到"
 )

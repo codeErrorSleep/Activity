@@ -2,6 +2,8 @@ package api
 
 import (
 	"Activity/models"
+	"Activity/storage/mysql/entity"
+	"Activity/storage/mysql/repository"
 	"context"
 	"fmt"
 	"time"
@@ -14,13 +16,40 @@ type GameService interface {
 	GetUserPrize(ctx context.Context, user models.User, activityID, gameName string) (*UserPrizeResp, error)
 }
 
+// ActivityService 活动服务接口
+type ActivityService interface {
+	// 活动管理
+	CreateActivity(ctx context.Context, req *CreateActivityRequest) (*ActivityResponse, error)
+	UpdateActivity(ctx context.Context, req *UpdateActivityRequest) (*ActivityResponse, error)
+	GetActivity(ctx context.Context, activityID int64) (*ActivityResponse, error)
+
+	// 活动参与
+	Participate(ctx context.Context, req *ParticipateRequest) (*ParticipationResponse, error)
+	GetParticipation(ctx context.Context, activityID int64, userID string) (*ParticipationResponse, error)
+
+	// 奖品管理
+	DistributePrize(ctx context.Context, activityID int64, userID string, prizeType string, prizeID string) (*PrizeResponse, error)
+}
+
 // gameService 玩法服务实现
 type gameService struct {
 	activityRepo ActivityRepository
 }
 
+// activityService 活动服务实现
+type activityService struct {
+	activityRepo repository.ActivityRepository
+}
+
 func NewGameService(activityRepo ActivityRepository) GameService {
 	return &gameService{
+		activityRepo: activityRepo,
+	}
+}
+
+// NewActivityService 创建活动服务实例
+func NewActivityService(activityRepo repository.ActivityRepository) ActivityService {
+	return &activityService{
 		activityRepo: activityRepo,
 	}
 }
@@ -176,4 +205,136 @@ func (s *gameService) saveUserGameRecord(ctx context.Context, user models.User, 
 // ActivityRepository 活动仓库接口
 type ActivityRepository interface {
 	GetActivity(ctx context.Context, activityID string) (models.ActivityInterface, error)
+}
+
+// CreateActivity 创建活动
+func (s *activityService) CreateActivity(ctx context.Context, req *CreateActivityRequest) (*ActivityResponse, error) {
+	// 验证时间范围
+	if req.StartAt >= req.EndAt {
+		return nil, ErrInvalidParam
+	}
+
+	// 创建活动实体
+	activity := &entity.Activity{
+		Category: req.Category,
+		Version:  req.Version,
+		Name:     req.Name,
+		Config:   req.Config,
+		StartAt:  req.StartAt,
+		EndAt:    req.EndAt,
+		Status:   req.Status,
+	}
+
+	// 保存到数据库
+	if err := s.activityRepo.Create(ctx, activity); err != nil {
+		return nil, ErrSystem
+	}
+
+	// 转换为响应
+	return &ActivityResponse{
+		ID:        activity.ID,
+		Category:  activity.Category,
+		Version:   activity.Version,
+		Name:      activity.Name,
+		Config:    activity.Config,
+		StartAt:   activity.StartAt,
+		EndAt:     activity.EndAt,
+		Status:    activity.Status,
+		CreatedAt: activity.CreatedAt,
+		UpdatedAt: activity.UpdatedAt,
+	}, nil
+}
+
+// UpdateActivity 更新活动
+func (s *activityService) UpdateActivity(ctx context.Context, req *UpdateActivityRequest) (*ActivityResponse, error) {
+	// 获取活动
+	activity, err := s.activityRepo.FindByID(ctx, req.ActivityID)
+	if err != nil {
+		return nil, ErrActivityNotFound
+	}
+
+	// 更新活动信息
+	activity.Config = req.Config
+	activity.Status = req.Status
+
+	// 保存更新
+	if err := s.activityRepo.Update(ctx, activity); err != nil {
+		return nil, ErrSystem
+	}
+
+	// 转换为响应
+	return &ActivityResponse{
+		ID:        activity.ID,
+		Category:  activity.Category,
+		Version:   activity.Version,
+		Name:      activity.Name,
+		Config:    activity.Config,
+		StartAt:   activity.StartAt,
+		EndAt:     activity.EndAt,
+		Status:    activity.Status,
+		CreatedAt: activity.CreatedAt,
+		UpdatedAt: activity.UpdatedAt,
+	}, nil
+}
+
+// GetActivity 获取活动信息
+func (s *activityService) GetActivity(ctx context.Context, activityID int64) (*ActivityResponse, error) {
+	// 获取活动
+	activity, err := s.activityRepo.FindByID(ctx, activityID)
+	if err != nil {
+		return nil, ErrActivityNotFound
+	}
+
+	// 转换为响应
+	return &ActivityResponse{
+		ID:        activity.ID,
+		Category:  activity.Category,
+		Version:   activity.Version,
+		Name:      activity.Name,
+		Config:    activity.Config,
+		StartAt:   activity.StartAt,
+		EndAt:     activity.EndAt,
+		Status:    activity.Status,
+		CreatedAt: activity.CreatedAt,
+		UpdatedAt: activity.UpdatedAt,
+	}, nil
+}
+
+// Participate 参与活动
+func (s *activityService) Participate(ctx context.Context, req *ParticipateRequest) (*ParticipationResponse, error) {
+	// 获取活动
+	activity, err := s.activityRepo.FindByID(ctx, req.ActivityID)
+	if err != nil {
+		return nil, ErrActivityNotFound
+	}
+
+	// 检查活动状态
+	now := time.Now().Unix()
+	if now < activity.StartAt {
+		return nil, ErrActivityNotStarted
+	}
+	if now > activity.EndAt {
+		return nil, ErrActivityEnded
+	}
+	if activity.Status != 1 {
+		return nil, ErrGameClosed
+	}
+
+	// TODO: 实现具体的参与逻辑
+	// 这里需要根据不同的活动类型和玩法类型实现不同的参与逻辑
+	// 建议将这部分逻辑抽象到独立的GameService中
+
+	return nil, nil
+}
+
+// GetParticipation 获取参与记录
+func (s *activityService) GetParticipation(ctx context.Context, activityID int64, userID string) (*ParticipationResponse, error) {
+	// TODO: 实现获取参与记录的逻辑
+	return nil, nil
+}
+
+// DistributePrize 发放奖品
+func (s *activityService) DistributePrize(ctx context.Context, activityID int64, userID string, prizeType string, prizeID string) (*PrizeResponse, error) {
+	// TODO: 实现奖品发放逻辑
+	return nil, nil
 }
