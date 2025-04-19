@@ -1,0 +1,770 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "contact": {}
+    },
+    "paths": {
+        "/activity": {
+            "post": {
+                "description": "创建一个新的活动",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "活动管理"
+                ],
+                "summary": "创建活动",
+                "parameters": [
+                    {
+                        "description": "活动信息",
+                        "name": "activity",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/api.CreateActivityRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/api.BaseResp"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/api.CreateActivityResponse"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/api.BaseResp"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/api.BaseResp"
+                        }
+                    }
+                }
+            }
+        },
+        "/activity/{id}": {
+            "get": {
+                "description": "获取指定ID的活动详细信息",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "活动管理"
+                ],
+                "summary": "获取活动信息",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "活动ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/api.BaseResp"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/api.GetActivityResponse"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/api.BaseResp"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/api.BaseResp"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "更新指定ID的活动信息",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "活动管理"
+                ],
+                "summary": "更新活动",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "活动ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "活动信息",
+                        "name": "activity",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/api.UpdateActivityRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/api.BaseResp"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/api.UpdateActivityResponse"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/api.BaseResp"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/api.BaseResp"
+                        }
+                    }
+                }
+            }
+        },
+        "/activity/{id}/participate": {
+            "post": {
+                "description": "用户参与指定活动",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "活动管理"
+                ],
+                "summary": "参与活动",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "活动ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "参与信息",
+                        "name": "participation",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/api.ParticipateRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/api.BaseResp"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/api.ParticipateResponse"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/api.BaseResp"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/api.BaseResp"
+                        }
+                    }
+                }
+            }
+        },
+        "/activity/{id}/participation": {
+            "get": {
+                "description": "获取用户在指定活动中的参与记录",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "活动管理"
+                ],
+                "summary": "获取参与记录",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "活动ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "用户ID",
+                        "name": "user_id",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/api.BaseResp"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/api.GetParticipationResponse"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/api.BaseResp"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/api.BaseResp"
+                        }
+                    }
+                }
+            }
+        },
+        "/game/participate": {
+            "post": {
+                "description": "用户参与指定玩法",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "玩法管理"
+                ],
+                "summary": "参与玩法",
+                "parameters": [
+                    {
+                        "description": "参与信息",
+                        "name": "participation",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/api.ParticipateGameReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/api.BaseResp"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/api.ParticipateGameResponse"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/api.BaseResp"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/api.BaseResp"
+                        }
+                    }
+                }
+            }
+        },
+        "/game/prize": {
+            "get": {
+                "description": "获取用户在指定玩法中获得的奖品",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "玩法管理"
+                ],
+                "summary": "获取用户奖品",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "活动ID",
+                        "name": "activity_id",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "玩法名称",
+                        "name": "game_name",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/api.BaseResp"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/api.GetUserPrizeResponse"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/api.BaseResp"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/api.BaseResp"
+                        }
+                    }
+                }
+            }
+        },
+        "/game/status": {
+            "get": {
+                "description": "获取用户在指定玩法中的状态",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "玩法管理"
+                ],
+                "summary": "获取玩法状态",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "活动ID",
+                        "name": "activity_id",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "玩法名称",
+                        "name": "game_name",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/api.BaseResp"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/api.GetGameStatusResponse"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/api.BaseResp"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/api.BaseResp"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "api.BaseResp": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "description": "错误码",
+                    "type": "integer"
+                },
+                "data": {
+                    "description": "响应数据"
+                },
+                "message": {
+                    "description": "错误信息",
+                    "type": "string"
+                }
+            }
+        },
+        "api.CreateActivityRequest": {
+            "description": "创建活动请求参数",
+            "type": "object",
+            "required": [
+                "category",
+                "end_at",
+                "name",
+                "start_at",
+                "status",
+                "version"
+            ],
+            "properties": {
+                "category": {
+                    "description": "@Description 活动类型",
+                    "type": "string"
+                },
+                "end_at": {
+                    "description": "@Description 活动结束时间",
+                    "type": "integer"
+                },
+                "name": {
+                    "description": "@Description 活动名称",
+                    "type": "string"
+                },
+                "start_at": {
+                    "description": "@Description 活动开始时间",
+                    "type": "integer"
+                },
+                "status": {
+                    "description": "@Description 活动状态",
+                    "type": "integer"
+                },
+                "version": {
+                    "description": "@Description 活动版本",
+                    "type": "string"
+                }
+            }
+        },
+        "api.CreateActivityResponse": {
+            "description": "创建活动响应数据",
+            "type": "object",
+            "properties": {
+                "id": {
+                    "description": "@Description 活动ID",
+                    "type": "integer"
+                }
+            }
+        },
+        "api.GetActivityResponse": {
+            "description": "获取活动响应数据",
+            "type": "object",
+            "properties": {
+                "category": {
+                    "description": "@Description 活动类型",
+                    "type": "string"
+                },
+                "end_at": {
+                    "description": "@Description 活动结束时间",
+                    "type": "integer"
+                },
+                "id": {
+                    "description": "@Description 活动ID",
+                    "type": "integer"
+                },
+                "name": {
+                    "description": "@Description 活动名称",
+                    "type": "string"
+                },
+                "start_at": {
+                    "description": "@Description 活动开始时间",
+                    "type": "integer"
+                },
+                "status": {
+                    "description": "@Description 活动状态",
+                    "type": "integer"
+                },
+                "version": {
+                    "description": "@Description 活动版本",
+                    "type": "string"
+                }
+            }
+        },
+        "api.GetGameStatusResponse": {
+            "description": "获取玩法状态响应数据",
+            "type": "object",
+            "properties": {
+                "participation_count": {
+                    "description": "@Description 参与次数",
+                    "type": "integer"
+                },
+                "status": {
+                    "description": "@Description 玩法状态",
+                    "type": "string"
+                }
+            }
+        },
+        "api.GetParticipationResponse": {
+            "description": "获取参与记录响应数据",
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "description": "@Description 参与时间",
+                    "type": "integer"
+                },
+                "participation_id": {
+                    "description": "@Description 参与ID",
+                    "type": "integer"
+                },
+                "user_id": {
+                    "description": "@Description 用户ID",
+                    "type": "string"
+                }
+            }
+        },
+        "api.GetUserPrizeResponse": {
+            "description": "获取用户奖品响应数据",
+            "type": "object",
+            "properties": {
+                "prizes": {
+                    "description": "@Description 奖品列表",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/api.PrizeInfo"
+                    }
+                }
+            }
+        },
+        "api.ParticipateGameReq": {
+            "description": "参与玩法请求参数",
+            "type": "object",
+            "required": [
+                "activity_id",
+                "game_name"
+            ],
+            "properties": {
+                "activity_id": {
+                    "description": "@Description 活动ID",
+                    "type": "string"
+                },
+                "game_name": {
+                    "description": "@Description 玩法名称",
+                    "type": "string"
+                }
+            }
+        },
+        "api.ParticipateGameResponse": {
+            "description": "参与玩法响应数据",
+            "type": "object",
+            "properties": {
+                "has_prize": {
+                    "description": "@Description 是否获得奖品",
+                    "type": "boolean"
+                },
+                "prize": {
+                    "description": "@Description 奖品信息",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/api.PrizeInfo"
+                        }
+                    ]
+                },
+                "success": {
+                    "description": "@Description 是否参与成功",
+                    "type": "boolean"
+                }
+            }
+        },
+        "api.ParticipateRequest": {
+            "description": "参与活动请求参数",
+            "type": "object",
+            "required": [
+                "user_id"
+            ],
+            "properties": {
+                "user_id": {
+                    "description": "@Description 用户ID",
+                    "type": "string"
+                }
+            }
+        },
+        "api.ParticipateResponse": {
+            "description": "参与活动响应数据",
+            "type": "object",
+            "properties": {
+                "participation_id": {
+                    "description": "@Description 参与ID",
+                    "type": "integer"
+                }
+            }
+        },
+        "api.PrizeInfo": {
+            "type": "object",
+            "properties": {
+                "discount_code": {
+                    "description": "折扣码（折扣码类型）",
+                    "type": "string"
+                },
+                "price_rule_id": {
+                    "description": "价格规则ID（折扣码类型）",
+                    "type": "integer"
+                },
+                "sku": {
+                    "description": "商品SKU（商品类型）",
+                    "type": "string"
+                },
+                "title": {
+                    "description": "商品标题（商品类型）",
+                    "type": "string"
+                },
+                "type": {
+                    "description": "奖品类型",
+                    "type": "string"
+                }
+            }
+        },
+        "api.UpdateActivityRequest": {
+            "description": "更新活动请求参数",
+            "type": "object",
+            "properties": {
+                "category": {
+                    "description": "@Description 活动类型",
+                    "type": "string"
+                },
+                "end_at": {
+                    "description": "@Description 活动结束时间",
+                    "type": "integer"
+                },
+                "name": {
+                    "description": "@Description 活动名称",
+                    "type": "string"
+                },
+                "start_at": {
+                    "description": "@Description 活动开始时间",
+                    "type": "integer"
+                },
+                "status": {
+                    "description": "@Description 活动状态",
+                    "type": "integer"
+                },
+                "version": {
+                    "description": "@Description 活动版本",
+                    "type": "string"
+                }
+            }
+        },
+        "api.UpdateActivityResponse": {
+            "description": "更新活动响应数据",
+            "type": "object",
+            "properties": {
+                "success": {
+                    "description": "@Description 是否更新成功",
+                    "type": "boolean"
+                }
+            }
+        }
+    }
+}

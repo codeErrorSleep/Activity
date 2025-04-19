@@ -2,28 +2,63 @@ package main
 
 import (
 	"Activity/api"
+	"Activity/config"
 	"Activity/models"
+	"Activity/storage/mysql"
+	"Activity/storage/mysql/repository"
 	"context"
+	"fmt"
 	"log"
 
 	"github.com/gin-gonic/gin"
 )
 
 func main() {
-	// 创建Gin引擎
+	// 加载配置
+	cfg, err := config.LoadConfig("config/config.yaml")
+	if err != nil {
+		log.Fatalf("Failed to load config: %v", err)
+	}
+
+	// 设置gin模式
+	gin.SetMode(cfg.API.Mode)
+
+	// 初始化数据库连接
+	db, err := mysql.NewDB(&mysql.Config{
+		Host:     cfg.MySQL.Host,
+		Port:     cfg.MySQL.Port,
+		User:     cfg.MySQL.User,
+		Password: cfg.MySQL.Password,
+		Database: cfg.MySQL.Database,
+	})
+	if err != nil {
+		log.Fatalf("Failed to connect to database: %v", err)
+	}
+
+	// 创建仓储实例
+	activityRepo := repository.NewActivityRepository(db)
+
+	// 创建服务实例
+	activityService := api.NewActivityService(activityRepo)
+	gameService := api.NewGameService(activityRepo)
+
+	// 创建处理器
+	handler := api.NewHandler(gameService, activityService)
+
+	// 创建路由
 	r := gin.Default()
 
-	// 创建依赖
-	activityRepo := NewActivityRepository() // 需要实现
-	gameService := api.NewGameService(activityRepo)
-	handler := api.NewHandler(gameService)
+	// 注册Swagger路由
+	handler.RegisterSwagger(r)
 
-	// 注册路由
+	// 注册API路由
 	handler.RegisterRoutes(r)
 
 	// 启动服务
-	if err := r.Run(":8080"); err != nil {
-		log.Fatal(err)
+	addr := fmt.Sprintf(":%d", cfg.API.Port)
+	log.Printf("Server starting on %s", addr)
+	if err := r.Run(addr); err != nil {
+		log.Fatalf("Failed to start server: %v", err)
 	}
 }
 

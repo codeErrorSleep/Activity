@@ -219,10 +219,10 @@ func (s *activityService) CreateActivity(ctx context.Context, req *CreateActivit
 		Category: req.Category,
 		Version:  req.Version,
 		Name:     req.Name,
-		Config:   req.Config,
-		StartAt:  req.StartAt,
-		EndAt:    req.EndAt,
-		Status:   req.Status,
+		// Config:   req.Config,
+		StartAt: req.StartAt,
+		EndAt:   req.EndAt,
+		// Status:   req.Status,
 	}
 
 	// 保存到数据库
@@ -248,14 +248,14 @@ func (s *activityService) CreateActivity(ctx context.Context, req *CreateActivit
 // UpdateActivity 更新活动
 func (s *activityService) UpdateActivity(ctx context.Context, req *UpdateActivityRequest) (*ActivityResponse, error) {
 	// 获取活动
-	activity, err := s.activityRepo.FindByID(ctx, req.ActivityID)
+	activity, err := s.activityRepo.FindByID(ctx, 0)
 	if err != nil {
 		return nil, ErrActivityNotFound
 	}
 
-	// 更新活动信息
-	activity.Config = req.Config
-	activity.Status = req.Status
+	// // 更新活动信息
+	// activity.Config = req.Config
+	// activity.Status = req.Status
 
 	// 保存更新
 	if err := s.activityRepo.Update(ctx, activity); err != nil {
@@ -303,7 +303,7 @@ func (s *activityService) GetActivity(ctx context.Context, activityID int64) (*A
 // Participate 参与活动
 func (s *activityService) Participate(ctx context.Context, req *ParticipateRequest) (*ParticipationResponse, error) {
 	// 获取活动
-	activity, err := s.activityRepo.FindByID(ctx, req.ActivityID)
+	activity, err := s.activityRepo.FindByID(ctx, 0)
 	if err != nil {
 		return nil, ErrActivityNotFound
 	}
