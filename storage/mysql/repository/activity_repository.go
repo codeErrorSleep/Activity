@@ -1,8 +1,10 @@
 package repository
 
 import (
+	"Activity/models"
 	"Activity/storage/mysql/entity"
 	"context"
+	"strconv"
 	"time"
 
 	"gorm.io/gorm"
@@ -15,6 +17,7 @@ type ActivityRepository interface {
 	FindByID(ctx context.Context, id int64) (*entity.Activity, error)
 	FindByCategory(ctx context.Context, category string) ([]*entity.Activity, error)
 	FindActive(ctx context.Context) ([]*entity.Activity, error)
+	GetActivity(ctx context.Context, activityID string) (models.ActivityInterface, error)
 }
 
 // activityRepository 活动仓储实现
@@ -68,4 +71,42 @@ func (r *activityRepository) FindActive(ctx context.Context) ([]*entity.Activity
 		return nil, err
 	}
 	return activities, nil
+}
+
+// GetActivity 获取活动信息
+func (r *activityRepository) GetActivity(ctx context.Context, activityID string) (models.ActivityInterface, error) {
+	id, err := strconv.ParseInt(activityID, 10, 64)
+	if err != nil {
+		return nil, err
+	}
+
+	activity, err := r.FindByID(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+
+	// 将数据库实体转换为领域模型
+	return &models.CommunityActivity{
+		MetaActivity: models.MetaActivity{
+			ID:       activity.ID,
+			Category: activity.Category,
+			Version:  activity.Version,
+			StartAt:  activity.StartAt,
+			EndAt:    activity.EndAt,
+			Status:   activity.Status,
+		},
+		GameList: []models.GameInterface{
+			&models.CommunityPostGame{
+				Name_: "发帖奖励",
+				Prize: &models.DiscountCodePrize{
+					DiscountCode: "COMMUNITY_2024",
+					PriceRuleID:  123,
+					Probability:  100,
+					TotalNum:     1000,
+					RemainNum:    1000,
+				},
+				State: models.GameStateOPEN,
+			},
+		},
+	}, nil
 }

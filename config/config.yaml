@@ -1,0 +1,24 @@
+# MySQL配置
+mysql:
+  host: "localhost"
+  port: 3306
+  user: "root"
+  password: "root"
+  database: "activity"
+  max_idle_conns: 10
+  max_open_conns: 100
+  conn_max_lifetime: "1h"
+
+# API配置
+api:
+  port: 8080
+  mode: "debug"  # debug/release
+  read_timeout: "10s"
+  write_timeout: "10s"
+
+# 日志配置
+log:
+  level: "info"  # debug/info/warn/error
+  format: "text" # text/json
+  output: "stdout" # stdout/file
+  file_path: "logs/app.log" 
