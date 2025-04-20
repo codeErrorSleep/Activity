@@ -112,9 +112,13 @@ definitions:
       game_name:
         description: '@Description 玩法名称'
         type: string
+      user_id:
+        description: '@Description 用户ID'
+        type: string
     required:
     - activity_id
     - game_name
+    - user_id
     type: object
   api.ParticipateGameResponse:
     description: 参与玩法响应数据

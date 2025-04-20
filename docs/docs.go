@@ -654,7 +654,8 @@ const docTemplate = `{
             "type": "object",
             "required": [
                 "activity_id",
-                "game_name"
+                "game_name",
+                "user_id"
             ],
             "properties": {
                 "activity_id": {
@@ -663,6 +664,10 @@ const docTemplate = `{
                 },
                 "game_name": {
                     "description": "@Description 玩法名称",
+                    "type": "string"
+                },
+                "user_id": {
+                    "description": "@Description 用户ID",
                     "type": "string"
                 }
             }

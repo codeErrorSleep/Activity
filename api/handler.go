@@ -22,26 +22,41 @@ func NewHandler(gameService GameService, activityService ActivityService) *Handl
 	}
 }
 
-// RegisterRoutes 注册路由
+// RegisterRoutes 注册所有API路由
 func (h *Handler) RegisterRoutes(r *gin.Engine) {
-	game := r.Group(constant.GameBasePath)
+	// API版本分组
+	v1 := r.Group("")
 	{
-		game.POST("/participate", h.ParticipateGame)
-		game.GET("/status", h.GetGameStatus)
-		game.GET("/prize", h.GetUserPrize)
+		// 活动相关接口
+		activity := v1.Group("/activity")
+		{
+			activity.POST("", h.CreateActivity)
+			activity.PUT("/:id", h.UpdateActivity)
+			activity.GET("/:id", h.GetActivity)
+			activity.POST("/:id/participate", h.Participate)
+			activity.GET("/:id/participation", h.GetParticipation)
+		}
+
+		// 游戏相关接口
+		game := v1.Group("/game")
+		{
+			game.POST("/participate", h.ParticipateGame)
+			game.GET("/status", h.GetGameStatus)
+			game.GET("/prize", h.GetUserPrize)
+		}
 	}
 }
 
-// @Summary 创建活动
-// @Description 创建一个新的活动
-// @Tags 活动管理
-// @Accept json
-// @Produce json
-// @Param activity body CreateActivityRequest true "活动信息"
-// @Success 200 {object} BaseResp{data=CreateActivityResponse}
-// @Failure 400 {object} BaseResp
-// @Failure 500 {object} BaseResp
-// @Router /activity [post]
+// @Summary		创建活动
+// @Description	创建一个新的活动
+// @Tags			活动管理
+// @Accept			json
+// @Produce		json
+// @Param			activity	body		CreateActivityRequest	true	"活动信息"
+// @Success		200			{object}	BaseResp{data=CreateActivityResponse}
+// @Failure		400			{object}	BaseResp
+// @Failure		500			{object}	BaseResp
+// @Router			/activity [post]
 func (h *Handler) CreateActivity(c *gin.Context) {
 	var req CreateActivityRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -68,17 +83,17 @@ func (h *Handler) CreateActivity(c *gin.Context) {
 	})
 }
 
-// @Summary 更新活动
-// @Description 更新指定ID的活动信息
-// @Tags 活动管理
-// @Accept json
-// @Produce json
-// @Param id path string true "活动ID"
-// @Param activity body UpdateActivityRequest true "活动信息"
-// @Success 200 {object} BaseResp{data=UpdateActivityResponse}
-// @Failure 400 {object} BaseResp
-// @Failure 500 {object} BaseResp
-// @Router /activity/{id} [put]
+// @Summary		更新活动
+// @Description	更新指定ID的活动信息
+// @Tags			活动管理
+// @Accept			json
+// @Produce		json
+// @Param			id			path		string					true	"活动ID"
+// @Param			activity	body		UpdateActivityRequest	true	"活动信息"
+// @Success		200			{object}	BaseResp{data=UpdateActivityResponse}
+// @Failure		400			{object}	BaseResp
+// @Failure		500			{object}	BaseResp
+// @Router			/activity/{id} [put]
 func (h *Handler) UpdateActivity(c *gin.Context) {
 	var req UpdateActivityRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -105,16 +120,16 @@ func (h *Handler) UpdateActivity(c *gin.Context) {
 	})
 }
 
-// @Summary 获取活动信息
-// @Description 获取指定ID的活动详细信息
-// @Tags 活动管理
-// @Accept json
-// @Produce json
-// @Param id path string true "活动ID"
-// @Success 200 {object} BaseResp{data=GetActivityResponse}
-// @Failure 400 {object} BaseResp
-// @Failure 500 {object} BaseResp
-// @Router /activity/{id} [get]
+// @Summary		获取活动信息
+// @Description	获取指定ID的活动详细信息
+// @Tags			活动管理
+// @Accept			json
+// @Produce		json
+// @Param			id	path		string	true	"活动ID"
+// @Success		200	{object}	BaseResp{data=GetActivityResponse}
+// @Failure		400	{object}	BaseResp
+// @Failure		500	{object}	BaseResp
+// @Router			/activity/{id} [get]
 func (h *Handler) GetActivity(c *gin.Context) {
 	activityID := c.Param("id")
 	if activityID == "" {
@@ -151,17 +166,17 @@ func (h *Handler) GetActivity(c *gin.Context) {
 	})
 }
 
-// @Summary 参与活动
-// @Description 用户参与指定活动
-// @Tags 活动管理
-// @Accept json
-// @Produce json
-// @Param id path string true "活动ID"
-// @Param participation body ParticipateRequest true "参与信息"
-// @Success 200 {object} BaseResp{data=ParticipateResponse}
-// @Failure 400 {object} BaseResp
-// @Failure 500 {object} BaseResp
-// @Router /activity/{id}/participate [post]
+// @Summary		参与活动
+// @Description	用户参与指定活动
+// @Tags			活动管理
+// @Accept			json
+// @Produce		json
+// @Param			id				path		string				true	"活动ID"
+// @Param			participation	body		ParticipateRequest	true	"参与信息"
+// @Success		200				{object}	BaseResp{data=ParticipateResponse}
+// @Failure		400				{object}	BaseResp
+// @Failure		500				{object}	BaseResp
+// @Router			/activity/{id}/participate [post]
 func (h *Handler) Participate(c *gin.Context) {
 	var req ParticipateRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -188,17 +203,17 @@ func (h *Handler) Participate(c *gin.Context) {
 	})
 }
 
-// @Summary 获取参与记录
-// @Description 获取用户在指定活动中的参与记录
-// @Tags 活动管理
-// @Accept json
-// @Produce json
-// @Param id path string true "活动ID"
-// @Param user_id query string true "用户ID"
-// @Success 200 {object} BaseResp{data=GetParticipationResponse}
-// @Failure 400 {object} BaseResp
-// @Failure 500 {object} BaseResp
-// @Router /activity/{id}/participation [get]
+// @Summary		获取参与记录
+// @Description	获取用户在指定活动中的参与记录
+// @Tags			活动管理
+// @Accept			json
+// @Produce		json
+// @Param			id		path		string	true	"活动ID"
+// @Param			user_id	query		string	true	"用户ID"
+// @Success		200		{object}	BaseResp{data=GetParticipationResponse}
+// @Failure		400		{object}	BaseResp
+// @Failure		500		{object}	BaseResp
+// @Router			/activity/{id}/participation [get]
 func (h *Handler) GetParticipation(c *gin.Context) {
 	activityID := c.Param("id")
 	if activityID == "" {
@@ -244,16 +259,16 @@ func (h *Handler) GetParticipation(c *gin.Context) {
 	})
 }
 
-// @Summary 参与玩法
-// @Description 用户参与指定玩法
-// @Tags 玩法管理
-// @Accept json
-// @Produce json
-// @Param participation body ParticipateGameReq true "参与信息"
-// @Success 200 {object} BaseResp{data=ParticipateGameResponse}
-// @Failure 400 {object} BaseResp
-// @Failure 500 {object} BaseResp
-// @Router /game/participate [post]
+// @Summary		参与玩法
+// @Description	用户参与指定玩法
+// @Tags			玩法管理
+// @Accept			json
+// @Produce		json
+// @Param			participation	body		ParticipateGameReq	true	"参与信息"
+// @Success		200				{object}	BaseResp{data=ParticipateGameResponse}
+// @Failure		400				{object}	BaseResp
+// @Failure		500				{object}	BaseResp
+// @Router			/game/participate [post]
 func (h *Handler) ParticipateGame(c *gin.Context) {
 	var req ParticipateGameReq
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -305,17 +320,17 @@ func (h *Handler) ParticipateGame(c *gin.Context) {
 	})
 }
 
-// @Summary 获取玩法状态
-// @Description 获取用户在指定玩法中的状态
-// @Tags 玩法管理
-// @Accept json
-// @Produce json
-// @Param activity_id query string true "活动ID"
-// @Param game_name query string true "玩法名称"
-// @Success 200 {object} BaseResp{data=GetGameStatusResponse}
-// @Failure 400 {object} BaseResp
-// @Failure 500 {object} BaseResp
-// @Router /game/status [get]
+// @Summary		获取玩法状态
+// @Description	获取用户在指定玩法中的状态
+// @Tags			玩法管理
+// @Accept			json
+// @Produce		json
+// @Param			activity_id	query		string	true	"活动ID"
+// @Param			game_name	query		string	true	"玩法名称"
+// @Success		200			{object}	BaseResp{data=GetGameStatusResponse}
+// @Failure		400			{object}	BaseResp
+// @Failure		500			{object}	BaseResp
+// @Router			/game/status [get]
 func (h *Handler) GetGameStatus(c *gin.Context) {
 	var req GetGameStatusReq
 	if err := c.ShouldBindQuery(&req); err != nil {
@@ -347,17 +362,17 @@ func (h *Handler) GetGameStatus(c *gin.Context) {
 	})
 }
 
-// @Summary 获取用户奖品
-// @Description 获取用户在指定玩法中获得的奖品
-// @Tags 玩法管理
-// @Accept json
-// @Produce json
-// @Param activity_id query string true "活动ID"
-// @Param game_name query string true "玩法名称"
-// @Success 200 {object} BaseResp{data=GetUserPrizeResponse}
-// @Failure 400 {object} BaseResp
-// @Failure 500 {object} BaseResp
-// @Router /game/prize [get]
+// @Summary		获取用户奖品
+// @Description	获取用户在指定玩法中获得的奖品
+// @Tags			玩法管理
+// @Accept			json
+// @Produce		json
+// @Param			activity_id	query		string	true	"活动ID"
+// @Param			game_name	query		string	true	"玩法名称"
+// @Success		200			{object}	BaseResp{data=GetUserPrizeResponse}
+// @Failure		400			{object}	BaseResp
+// @Failure		500			{object}	BaseResp
+// @Router			/game/prize [get]
 func (h *Handler) GetUserPrize(c *gin.Context) {
 	var req GetUserPrizeReq
 	if err := c.ShouldBindQuery(&req); err != nil {
