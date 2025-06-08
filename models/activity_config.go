@@ -3,7 +3,34 @@ package models
 import (
 	"encoding/json"
 	"fmt"
+	"sync"
 )
+
+// ActivityFactory 活动工厂接口
+type ActivityFactory interface {
+	Create(config ActivityConfigJSON) (ActivityInterface, error)
+}
+
+// activityFactoryRegistry 活动工厂注册表
+var (
+	activityFactoryRegistry = make(map[string]ActivityFactory)
+	registryMutex           sync.RWMutex
+)
+
+// RegisterActivityFactory 注册活动工厂
+func RegisterActivityFactory(category string, factory ActivityFactory) {
+	registryMutex.Lock()
+	defer registryMutex.Unlock()
+	activityFactoryRegistry[category] = factory
+}
+
+// GetActivityFactory 获取活动工厂
+func GetActivityFactory(category string) (ActivityFactory, bool) {
+	registryMutex.RLock()
+	defer registryMutex.RUnlock()
+	factory, exists := activityFactoryRegistry[category]
+	return factory, exists
+}
 
 // ActivityConfigJSON 活动配置JSON结构体
 type ActivityConfigJSON struct {
@@ -29,37 +56,12 @@ func NewActivityFromConfig(configJSON []byte) (ActivityInterface, error) {
 		return nil, fmt.Errorf("failed to unmarshal config: %w", err)
 	}
 
-	// 根据活动类型创建对应的活动实例
-	switch config.Category {
-	case "community":
-		return NewCommunityActivity(config)
-	default:
+	factory, exists := GetActivityFactory(config.Category)
+	if !exists {
 		return nil, fmt.Errorf("unsupported activity category: %s", config.Category)
 	}
-}
 
-// NewCommunityActivity 创建社区活动实例
-func NewCommunityActivity(config ActivityConfigJSON) (ActivityInterface, error) {
-	// 解析玩法配置
-	var games []GameInterface
-	for _, gameConfig := range config.Games {
-		game, err := NewGameFromConfig(gameConfig)
-		if err != nil {
-			return nil, fmt.Errorf("failed to create game: %w", err)
-		}
-		games = append(games, game)
-	}
-
-	return &CommunityActivity{
-		MetaActivity: MetaActivity{
-			Category: config.Category,
-			Version:  config.Version,
-			StartAt:  config.StartAt,
-			EndAt:    config.EndAt,
-			Status:   1, // 默认上线状态
-		},
-		GameList: games,
-	}, nil
+	return factory.Create(config)
 }
 
 // NewGameFromConfig 根据配置创建玩法实例
@@ -75,38 +77,4 @@ func NewGameFromConfig(config GameConfig) (GameInterface, error) {
 	default:
 		return nil, fmt.Errorf("unsupported game type: %s", config.Type)
 	}
-}
-
-// CommunityActivity 社区活动实现
-type CommunityActivity struct {
-	MetaActivity
-	GameList []GameInterface
-}
-
-func (a *CommunityActivity) Category() string {
-	return a.MetaActivity.Category
-}
-
-func (a *CommunityActivity) Version() string {
-	return a.MetaActivity.Version
-}
-
-func (a *CommunityActivity) Name() string {
-	return a.MetaActivity.ActivityConfig.Activity.Name()
-}
-
-func (a *CommunityActivity) Games() []GameInterface {
-	return a.GameList
-}
-
-func (a *CommunityActivity) StartAt() int64 {
-	return a.MetaActivity.StartAt
-}
-
-func (a *CommunityActivity) EndAt() int64 {
-	return a.MetaActivity.EndAt
-}
-
-func (a *CommunityActivity) Status() int64 {
-	return a.MetaActivity.Status
 }
