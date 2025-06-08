@@ -6,6 +6,71 @@ import (
 	"fmt"
 )
 
+// CommunityActivityFactory 社区活动工厂
+type CommunityActivityFactory struct{}
+
+func (f *CommunityActivityFactory) Create(config ActivityConfigJSON) (ActivityInterface, error) {
+	// 解析玩法配置
+	var games []GameInterface
+	for _, gameConfig := range config.Games {
+		game, err := NewGameFromConfig(gameConfig)
+		if err != nil {
+			return nil, fmt.Errorf("failed to create game: %w", err)
+		}
+		games = append(games, game)
+	}
+
+	return &CommunityActivity{
+		MetaActivity: MetaActivity{
+			Category: config.Category,
+			Version:  config.Version,
+			StartAt:  config.StartAt,
+			EndAt:    config.EndAt,
+			Status:   1, // 默认上线状态
+		},
+		GameList: games,
+	}, nil
+}
+
+// init 注册活动工厂
+func init() {
+	RegisterActivityFactory("community", &CommunityActivityFactory{})
+}
+
+// CommunityActivity 社区活动实现
+type CommunityActivity struct {
+	MetaActivity
+	GameList []GameInterface
+}
+
+func (a *CommunityActivity) Category() string {
+	return a.MetaActivity.Category
+}
+
+func (a *CommunityActivity) Version() string {
+	return a.MetaActivity.Version
+}
+
+func (a *CommunityActivity) Name() string {
+	return a.MetaActivity.ActivityConfig.Activity.Name()
+}
+
+func (a *CommunityActivity) Games() []GameInterface {
+	return a.GameList
+}
+
+func (a *CommunityActivity) StartAt() int64 {
+	return a.MetaActivity.StartAt
+}
+
+func (a *CommunityActivity) EndAt() int64 {
+	return a.MetaActivity.EndAt
+}
+
+func (a *CommunityActivity) Status() int64 {
+	return a.MetaActivity.Status
+}
+
 // CommunityPostGame 社区发帖玩法
 type CommunityPostGame struct {
 	Name_ string             `json:"-"` // 玩法名称，从GameConfig中获取
